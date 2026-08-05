@@ -2,6 +2,7 @@ using Asp.Versioning;
 using Scalar.AspNetCore;
 using TodoApp.Application.Extensions;
 using TodoApp.Infrastructure.Extensions;
+using TodoApp.Infrastructure.Extensions.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,19 @@ builder.Services.AddApiVersioning(cfg =>
     cfg.SubstituteApiVersionInUrl = true;
 });
 
+builder.Services.AddCors(cfg =>
+{
+    cfg.AddPolicy("AllowLocalOrigins", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
+
+builder.Services.AddHttpContextAccessor();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -42,9 +55,17 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
+app.UseCors("AllowLocalOrigins");
+
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthorization();
+app.UseAuthorization();
+
 app.MapDefaultControllerRoute();
 
+await app.UseSeedData();
+
 app.Run();
+

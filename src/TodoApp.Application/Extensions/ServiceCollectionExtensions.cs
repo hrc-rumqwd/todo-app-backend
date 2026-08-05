@@ -15,7 +15,7 @@ namespace TodoApp.Application.Extensions
             });
 
             services.AddValidatorsFromAssembly(typeof(ServiceCollectionExtensions).Assembly);
-            services.AddSingleton<IBroker, Broker>();
+            services.AddScoped<IBroker, Broker>();
             return services;
         }
     }

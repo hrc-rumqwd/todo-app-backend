@@ -23,6 +23,10 @@ namespace TodoApp.Infrastructure.Persistence.Configurations
             builder.Property(p => p.Status)
                 .IsRequired()
                 .HasDefaultValue(TaskStatuses.New.ToString());
+
+            builder.Property(p => p.IsActive)
+                .IsRequired()
+                .HasDefaultValue(true);
         }
     }
 }

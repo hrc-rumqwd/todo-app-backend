@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TodoApp.Application.Contracts;
 using TodoApp.Domain.Entities;
 using TodoApp.Infrastructure.Extensions.Persistence;
 
@@ -8,7 +9,7 @@ namespace TodoApp.Infrastructure.Persistence
     public class ApplicationDbContext : IdentityDbContext<
         AppUser,
         AppRole, 
-        Guid>
+        Guid>, IApplicationDbContext
     {
         public DbSet<TaskItem> TaskItems { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TodoApp.Application.Commons;
 using TodoApp.Application.TaskItems.Commands.CreateTaskItem;
 using TodoApp.Application.TaskItems.Commands.DeleteTaskItem;
@@ -10,6 +11,7 @@ namespace TodoApp.Api.Controllers.v1
 {
     [ApiController]
     [Route("api/v1/[controller]")]
+    [Authorize]
     public class TaskItemsController : ControllerBase
     {
         private readonly IBroker _broker;
@@ -20,9 +22,8 @@ namespace TodoApp.Api.Controllers.v1
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTaskItems(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllTaskItems(GetAllTaskItemsQuery query, CancellationToken cancellationToken)
         {
-            var query = new GetAllTaskItemsQuery();
             var result = await _broker.QueryAsync(query, cancellationToken);
             return Ok(result);
         }
@@ -46,7 +47,7 @@ namespace TodoApp.Api.Controllers.v1
             return CreatedAtAction(nameof(GetTaskItemById), new { id = result.Data.Id }, result.Data);
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateTaskItem(long id, UpdateTaskItemCommand command, CancellationToken cancellationToken)
         {
             if (id != command.Id)
@@ -68,9 +69,9 @@ namespace TodoApp.Api.Controllers.v1
             var result = await _broker.CommandAsync(command, cancellationToken);
             if (!result.Data)
             {
-                return NotFound();
+                return BadRequest(result);
             }
-            return NoContent();
+            return Ok(result);
         }
     }
 }
