@@ -16,7 +16,7 @@ namespace TodoApp.Infrastructure.Services.Identity
 
         public string GetUserId()
         {
-            return _httpContext.User.FindFirstValue(IdentityClaims.UserId);
+            return _httpContext.User.FindFirstValue(IdentityClaims.UserId) ?? string.Empty;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace TodoApp.Application.TaskItems.Queries.GetAllTaskItems
         {
             // Search for user
             var requestUid = _userService.GetUserId();
-            var author = await _context.GetEntityQuery<AppUser>()
+            var author = await _context.Query<AppUser>()
                 .Where(u => u.Id.Equals(Guid.Parse(requestUid)))
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -48,7 +48,7 @@ namespace TodoApp.Application.TaskItems.Queries.GetAllTaskItems
                 return Result<PaginationResult<TaskItemDto>>.Failure("User not found");
 
             // Get all task items for the current user 
-            var queryable = _context.GetEntityQuery<TaskItem>();
+            var queryable = _context.Query<TaskItem>();
             queryable = queryable.Where(t => requestUid.Equals(t.CreatedBy));
 
             if (request.Status != null && request.Status.Any())

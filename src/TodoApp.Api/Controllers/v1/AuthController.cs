@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TodoApp.Api.Controllers.v1.RefreshUserToken;
 using TodoApp.Application.Auth.Commands.Login;
 using TodoApp.Application.Auth.Commands.Register;
 using TodoApp.Application.Commons;
@@ -36,6 +37,13 @@ namespace TodoApp.Api.Controllers.v1
                 return BadRequest();
             }
             return Ok(result);
+        }
+
+        [HttpPost("/token/refresh")]
+        public async Task<IActionResult> RefreshToken(RefreshUserTokenCommand command, CancellationToken cancellationToken)
+        {
+            var result = await _broker.CommandAsync(command, cancellationToken);
+            return result.IsSuccess ? Ok(result) : Unauthorized(result);
         }
     }
 }

@@ -26,7 +26,8 @@ namespace TodoApp.Infrastructure.Services.Identity
 
         private TokenResult GenerateIdentityToken(IEnumerable<Claim> claims)
         {
-            DateTime expiry = DateTime.UtcNow.AddMinutes(_jwtConfig.ExpiryMinutes);
+            DateTime accessTokenExpiry = DateTime.UtcNow.AddMinutes(_jwtConfig.ExpiryMinutes);
+            DateTime refreshTokenExpiry = DateTime.UtcNow.AddMinutes(_jwtConfig.RefreshTokenExpiryMinutes);
 
             var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_jwtConfig.SecretKey)),
@@ -36,14 +37,15 @@ namespace TodoApp.Infrastructure.Services.Identity
                 issuer: _jwtConfig.Issuer,
                 audience: _jwtConfig.Audience,
                 claims,
-                expires: expiry,
+                expires: accessTokenExpiry,
                 signingCredentials: signingCredentials);
 
             return new TokenResult
             {
                 AccessToken = new JwtSecurityTokenHandler().WriteToken(jwt),
                 RefreshToken = GenerateRefreshToken(),
-                Expiry = expiry
+                AccessTokenExpiry = accessTokenExpiry,
+                RefreshTokenExpiry = refreshTokenExpiry
             };
         }
 

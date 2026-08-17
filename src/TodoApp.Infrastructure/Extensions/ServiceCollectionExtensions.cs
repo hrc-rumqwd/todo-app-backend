@@ -63,6 +63,8 @@ namespace TodoApp.Infrastructure.Extensions
                         ValidateAudience = jwtConfig.ValidateAudience,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.SecretKey)),
                         RequireExpirationTime = true,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero // Optional: Set clock skew to zero for immediate expiration
                     };
 
                     //options.Events.OnAuthenticationFailed += context =>

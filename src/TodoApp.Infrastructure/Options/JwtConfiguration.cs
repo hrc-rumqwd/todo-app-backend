@@ -23,6 +23,7 @@ namespace TodoApp.Infrastructure.Options
     {
         public string SecretKey { get; set; }
         public long ExpiryMinutes { get; set; }
+        public long RefreshTokenExpiryMinutes { get; set; }
         public string Audience { get; set; }
         public bool ValidateAudience { get; set; }
         public string Issuer { get; set; }
